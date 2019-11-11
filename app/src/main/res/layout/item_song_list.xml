@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="song"
+            type="com.arildojr.data.song.model.Song" />
+
+        <variable
+            name="adapter"
+            type="com.arildojr.appband.songlist.SongsAdapter" />
+
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground"
+        android:onClick="@{() -> adapter.onItemClicked(song)}"
+        android:orientation="horizontal"
+        android:paddingStart="24dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="24dp"
+        android:paddingBottom="8dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:importantForAccessibility="no"
+                bind:imageUrl="@{song.thumb}"
+                bind:cornerSize="@{24}"
+                android:src="@drawable/bg_rounded_stroke_gray" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginStart="16dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:fontFamily="@font/noto_medium"
+                android:maxLines="1"
+                android:text="@{song.title}"
+                tools:text="Song Title"
+                android:textColor="@color/black"
+                android:textSize="16sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/noto_regular"
+                android:text="@{song.singer}"
+                tools:text="Artist (Genre)"
+                android:textSize="14sp" />
+        </LinearLayout>
+    </LinearLayout>
+</layout>
