@@ -7,11 +7,8 @@
 
         <variable
             name="song"
-            type="com.arildojr.data.song.model.Song" />
+            type="com.arildojr.data.songs.model.Song" />
 
-        <variable
-            name="adapter"
-            type="com.arildojr.appband.songlist.SongsAdapter" />
 
     </data>
 
@@ -19,7 +16,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?attr/selectableItemBackground"
-        android:onClick="@{() -> adapter.onItemClicked(song)}"
         android:orientation="horizontal"
         android:paddingStart="24dp"
         android:paddingTop="8dp"
@@ -34,9 +30,7 @@
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:importantForAccessibility="no"
-                bind:imageUrl="@{song.thumb}"
-                bind:cornerSize="@{24}"
-                android:src="@drawable/bg_rounded_stroke_gray" />
+                android:src="@drawable/bg_rounded_stroke_gray"/>
         </LinearLayout>
 
         <LinearLayout
@@ -51,18 +45,16 @@
                 android:ellipsize="end"
                 android:fontFamily="@font/noto_medium"
                 android:maxLines="1"
-                android:text="@{song.title}"
-                tools:text="Song Title"
                 android:textColor="@color/black"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                tools:text="Song Title" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/noto_regular"
-                android:text="@{song.singer}"
-                tools:text="Artist (Genre)"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                tools:text="Artist (Genre)" />
         </LinearLayout>
     </LinearLayout>
 </layout>
