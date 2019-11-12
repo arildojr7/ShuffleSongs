@@ -10,6 +10,7 @@ import com.arildojr.shufflesongs.songs.viewmodel.SongsViewModel
 import kotlinx.coroutines.launch
 import org.koin.android.viewmodel.ext.android.viewModel
 import android.view.Menu
+import android.view.MenuItem
 
 
 class SongsActivity : BaseActivity<ActivitySongsBinding>(R.layout.activity_songs) {
@@ -24,12 +25,12 @@ class SongsActivity : BaseActivity<ActivitySongsBinding>(R.layout.activity_songs
 
         setSupportActionBar(binding.toolbar)
 
+        binding.viewModel = viewModel
         binding.rvSongs.adapter = songsAdapter
 
         launch {
             viewModel.getSongs()
         }
-
     }
 
     override fun subscribeUi() {
@@ -42,5 +43,15 @@ class SongsActivity : BaseActivity<ActivitySongsBinding>(R.layout.activity_songs
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.songs_menu, menu)
         return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.btnShuffle -> {
+                viewModel.shuffleSongs()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 }
