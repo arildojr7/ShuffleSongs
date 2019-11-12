@@ -7,7 +7,7 @@ import com.arildojr.data.songs.model.Song
 import com.arildojr.shufflesongs.databinding.ItemSongListBinding
 
 class SongsAdapter(
-    private var items: List<Song>,
+    private var items: List<Song> = emptyList(),
     private val openEventDetails: (Song) -> Unit
 ) : RecyclerView.Adapter<SongsAdapter.ViewHolder>() {
 

@@ -1,38 +1,46 @@
 package com.arildojr.shufflesongs.songs
 
 import android.os.Bundle
-import android.util.Log
-import androidx.appcompat.app.AppCompatActivity
-import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import com.arildojr.shufflesongs.R
+import com.arildojr.shufflesongs.core.base.BaseActivity
 import com.arildojr.shufflesongs.databinding.ActivitySongsBinding
 import com.arildojr.shufflesongs.songs.adapter.SongsAdapter
 import com.arildojr.shufflesongs.songs.viewmodel.SongsViewModel
+import kotlinx.coroutines.launch
 import org.koin.android.viewmodel.ext.android.viewModel
+import android.view.Menu
 
-class SongsActivity : AppCompatActivity() {
+
+class SongsActivity : BaseActivity<ActivitySongsBinding>(R.layout.activity_songs) {
 
     private val viewModel: SongsViewModel by viewModel()
-    private lateinit var binding: ActivitySongsBinding
-
-    private val songsAdapter by lazy { SongsAdapter(emptyList()){
-
-    } }
+    private val songsAdapter by lazy {
+        SongsAdapter { }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_songs)
 
-        setupObservers()
-        viewModel.getSongs()
+        setSupportActionBar(binding.toolbar)
 
         binding.rvSongs.adapter = songsAdapter
+
+        launch {
+            viewModel.getSongs()
+        }
+
     }
 
-    private fun setupObservers() {
+    override fun subscribeUi() {
         viewModel.songs.observe(this, Observer {
-            Log.e(">>>> ", it.toString())
+            songsAdapter.setData(it)
         })
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        menuInflater.inflate(R.menu.songs_menu, menu)
+        return true
     }
 }
