@@ -14,7 +14,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/selectableItemBackground"
+        android:background="@color/darkGray"
         android:orientation="horizontal"
         android:paddingStart="24dp"
         android:paddingTop="8dp"
@@ -46,17 +46,20 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:fontFamily="@font/noto_medium"
-                android:maxLines="1"
+                android:singleLine="true"
                 android:text="@{song.trackName}"
-                android:textColor="@color/black"
+                android:textColor="@color/white"
                 android:textSize="16sp"
                 tools:text="Song Title" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:ellipsize="end"
                 android:fontFamily="@font/noto_regular"
-                android:text="@{song.artistName}"
+                android:singleLine="true"
+                android:text="@{@string/artist_genre(song.artistName, song.primaryGenreName)}"
+                android:textColor="@color/colorAccent"
                 android:textSize="14sp"
                 tools:text="Artist (Genre)" />
 

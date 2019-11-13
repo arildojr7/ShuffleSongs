@@ -5,8 +5,7 @@
     <item
         android:id="@+id/btnShuffle"
         android:icon="@drawable/ic_shuffle"
-        android:iconTint="@color/colorAccent"
-        android:title="shuffle"
+        android:title="@string/shuffle"
         app:showAsAction="always" />
 
 </menu>
