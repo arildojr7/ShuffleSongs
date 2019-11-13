@@ -5,9 +5,7 @@ import com.arildojr.data.songs.SongsRepository
 import com.arildojr.data.songs.enum.WrapperTypeEnum
 import com.arildojr.data.songs.model.Song
 import com.arildojr.shufflesongs.core.base.BaseViewModel
-import com.arildojr.shufflesongs.core.util.CommandProvider
-import com.arildojr.shufflesongs.core.util.GenericCommand
-import com.arildojr.shufflesongs.core.util.SingleLiveEvent
+import com.arildojr.shufflesongs.core.util.*
 
 class SongsViewModel(
     private val songsRepository: SongsRepository,
@@ -16,6 +14,7 @@ class SongsViewModel(
 
     companion object {
         private val artistIds = listOf("909253", "1171421960", "358714030", "1419227", "264111789")
+        private const val LIMIT_SONGS = 5
     }
 
     val command: SingleLiveEvent<GenericCommand> = commandProvider.getCommand()
@@ -30,7 +29,7 @@ class SongsViewModel(
         viewState.value = currentViewState().copy(isLoadingSongs = true)
 
         try {
-            val response = songsRepository.getSongs(artistIds.joinToString(","))
+            val response = songsRepository.getSongs(artistIds.joinToString(","), LIMIT_SONGS)
 
             viewState.value = currentViewState().copy(isLoadingSongs = false)
 
@@ -48,32 +47,26 @@ class SongsViewModel(
             viewState.value = currentViewState().copy(isLoadingSongs = false)
             command.postValue(Command.ErrorOnLoadSongs)
         }
-
     }
 
-    fun shuffleSongs(songs: List<Song> = emptyList()) {
-        val shuffledSongs = songs.shuffled()
-        val auxList = mutableListOf<Song>()
+    fun shuffleSongs() {
+        if (command.value is Command.LoadSongs) {
+            val songs = (command.value as Command.LoadSongs).songs.shuffled()
+            val group = songs.groupBy { it.artistId }
+            val songsShuffled = combine(group.values.toTypedArray())
 
-        shuffledSongs.forEachIndexed { index, song ->
-            when {
-                index == 0 -> auxList.add(song)
-                song.artistId != shuffledSongs[index - 1].artistId -> auxList.add(song)
-                else -> {
-
-                }
+            tryCast<List<Song>>(songsShuffled) {
+                command.postValue(Command.LoadSongs(this))
             }
         }
-
     }
-
-    data class ViewState(
-        val isLoadingSongs: Boolean = false
-    )
 
     sealed class Command : GenericCommand() {
         object ErrorOnLoadSongs : Command()
         class LoadSongs(val songs: List<Song>) : Command()
     }
 
+    data class ViewState(
+        val isLoadingSongs: Boolean = false
+    )
 }
