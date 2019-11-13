@@ -6,5 +6,5 @@ import retrofit2.Response
 import retrofit2.http.Query
 
 interface SongsDataSource {
-    suspend fun getSongs(@Query("id") artistId: String): Response<ResponseWrapper<Song>>
+    suspend fun getSongs(@Query("id") artistId: String, limit: Int): Response<ResponseWrapper<Song>>
 }

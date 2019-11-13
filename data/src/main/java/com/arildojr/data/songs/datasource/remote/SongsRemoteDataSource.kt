@@ -7,7 +7,7 @@ import com.arildojr.data.songs.model.Song
 import retrofit2.Response
 
 class SongsRemoteDataSource(private val apiService: SongsApiService) : SongsDataSource {
-    override suspend fun getSongs(artistId: String): Response<ResponseWrapper<Song>> {
-        return apiService.getSongs(artistId)
+    override suspend fun getSongs(artistId: String, limit: Int): Response<ResponseWrapper<Song>> {
+        return apiService.getSongs(artistId, limit)
     }
 }
