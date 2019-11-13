@@ -1,53 +1,79 @@
 package com.arildojr.shufflesongs.songs.viewmodel
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
 import com.arildojr.data.songs.SongsRepository
 import com.arildojr.data.songs.enum.WrapperTypeEnum
 import com.arildojr.data.songs.model.Song
 import com.arildojr.shufflesongs.core.base.BaseViewModel
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
-import java.util.*
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
-import android.util.Log
-import kotlin.math.abs
+import com.arildojr.shufflesongs.core.util.CommandProvider
+import com.arildojr.shufflesongs.core.util.GenericCommand
+import com.arildojr.shufflesongs.core.util.SingleLiveEvent
 
-
-class SongsViewModel(private val songsRepository: SongsRepository) : BaseViewModel() {
+class SongsViewModel(
+    private val songsRepository: SongsRepository,
+    private val commandProvider: CommandProvider
+) : BaseViewModel() {
 
     companion object {
         private val artistIds = listOf("909253", "1171421960", "358714030", "1419227", "264111789")
     }
 
-    private val _songs = MutableLiveData<List<Song>>()
-    val songs: LiveData<List<Song>> = Transformations.map(_songs) { it }
+    val command: SingleLiveEvent<GenericCommand> = commandProvider.getCommand()
+    val viewState: MutableLiveData<ViewState> = MutableLiveData()
+    private fun currentViewState(): ViewState = viewState.value ?: ViewState()
 
-    private val _isLoading = MutableLiveData<Boolean>()
-    val isLoading: LiveData<Boolean> = Transformations.map(_isLoading) { it }
-
-    suspend fun getSongs() {
-        _isLoading.postValue(true)
-
-        val response = songsRepository.getSongs(artistIds.joinToString(","))
-        _songs.postValue(response?.filter { it.wrapperType == WrapperTypeEnum.TRACK.getValue() })
-
-        _isLoading.postValue(false)
+    init {
+        viewState.value = ViewState()
     }
 
-    fun shuffleSongs(songs: List<Song> = _songs.value.orEmpty()) {
+    suspend fun getSongs() {
+        viewState.value = currentViewState().copy(isLoadingSongs = true)
+
+        try {
+            val response = songsRepository.getSongs(artistIds.joinToString(","))
+
+            viewState.value = currentViewState().copy(isLoadingSongs = false)
+
+            if (response.isSuccessful) {
+                response.body()?.results?.let { songList ->
+                    command.postValue(
+                        Command.LoadSongs(songList.filter { it.wrapperType == WrapperTypeEnum.TRACK.getValue() })
+                    )
+                }
+            } else {
+                command.postValue(Command.ErrorOnLoadSongs)
+            }
+
+        } catch (e: Exception) {
+            viewState.value = currentViewState().copy(isLoadingSongs = false)
+            command.postValue(Command.ErrorOnLoadSongs)
+        }
+
+    }
+
+    fun shuffleSongs(songs: List<Song> = emptyList()) {
         val shuffledSongs = songs.shuffled()
         val auxList = mutableListOf<Song>()
 
         shuffledSongs.forEachIndexed { index, song ->
             when {
-                index == 0  -> auxList.add(song)
-                song.artistId != shuffledSongs[index-1].artistId -> auxList.add(song)
-                else -> Log.e(">>>>> Count not added: ", song.artistName)
+                index == 0 -> auxList.add(song)
+                song.artistId != shuffledSongs[index - 1].artistId -> auxList.add(song)
+                else -> {
+
+                }
             }
         }
 
-        if (auxList.isEmpty())  _songs.postValue(auxList)
+    }
+
+    data class ViewState(
+        val isLoadingSongs: Boolean = false
+    )
+
+    sealed class Command : GenericCommand() {
+        object ErrorOnLoadSongs : Command()
+        class LoadSongs(val songs: List<Song>) : Command()
     }
 
 }

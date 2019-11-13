@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">ShuffleSongs</string>
+
+    <string name="error_dialog_title">Ops!</string>
+    <string name="error_dialog_description">Ocorreu um erro ao carregar a playlist</string>
+    <string name="error_dialog_try_again">Tentar novamente</string>
+    <string name="error_dialog_exit">Sair</string>
 </resources>

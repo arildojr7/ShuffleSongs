@@ -7,9 +7,7 @@ import com.arildojr.data.songs.model.Song
 import com.arildojr.shufflesongs.databinding.ItemSongListBinding
 
 class SongsAdapter(
-    private var items: List<Song> = emptyList(),
-    private val openEventDetails: (Song) -> Unit
-) : RecyclerView.Adapter<SongsAdapter.ViewHolder>() {
+    private var items: List<Song> = emptyList()) : RecyclerView.Adapter<SongsAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -20,20 +18,16 @@ class SongsAdapter(
     override fun getItemCount() = items.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) =
-        holder.bind(items[position], this)
+        holder.bind(items[position])
 
     fun setData(data: List<Song>?) {
         this.items = data.orEmpty()
         notifyDataSetChanged()
     }
 
-    fun onItemClicked(item: Song) {
-        openEventDetails(item)
-    }
-
     class ViewHolder(private val binding: ItemSongListBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(song: Song, adapter: SongsAdapter) {
+        fun bind(song: Song) {
             binding.song = song
             binding.executePendingBindings()
         }
