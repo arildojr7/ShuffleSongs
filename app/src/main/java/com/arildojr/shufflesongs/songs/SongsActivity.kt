@@ -69,9 +69,11 @@ class SongsActivity : BaseActivity<ActivitySongsBinding>(R.layout.activity_songs
         when (viewState.isLoadingSongs) {
             true -> {
                 binding.pbLoaderSongs.visibility = View.VISIBLE
+                binding.toolbar.visibility = View.GONE
             }
             false -> {
                 binding.pbLoaderSongs.visibility = View.GONE
+                binding.toolbar.visibility = View.VISIBLE
             }
         }
     }
