@@ -18,6 +18,7 @@ class SongsActivity : BaseActivity<ActivitySongsBinding>(R.layout.activity_songs
 
     private val viewModel: SongsViewModel by viewModel()
     private val songsAdapter by lazy { SongsAdapter() }
+    private val artistIds = listOf("909253", "1171421960", "358714030", "1419227", "264111789")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,7 +29,7 @@ class SongsActivity : BaseActivity<ActivitySongsBinding>(R.layout.activity_songs
         binding.rvSongs.adapter = songsAdapter
 
         launch {
-            viewModel.getSongs()
+            viewModel.getSongs(artistIds)
         }
     }
 
@@ -55,7 +56,7 @@ class SongsActivity : BaseActivity<ActivitySongsBinding>(R.layout.activity_songs
             .setMessage(getString(R.string.error_dialog_description))
             .setPositiveButton(getString(R.string.error_dialog_try_again)) { _, _ ->
                 launch {
-                    viewModel.getSongs()
+                    viewModel.getSongs(artistIds)
                 }
             }
             .setNegativeButton(getString(R.string.error_dialog_exit)) { _, _ ->

@@ -13,19 +13,19 @@ class SongsViewModel(
 ) : BaseViewModel() {
 
     companion object {
-        private val artistIds = listOf("909253", "1171421960", "358714030", "1419227", "264111789")
         private const val LIMIT_SONGS = 5
     }
 
     val command: SingleLiveEvent<GenericCommand> = commandProvider.getCommand()
     val viewState: MutableLiveData<ViewState> = MutableLiveData()
+    private val actualSongs by lazy { (command.value as? Command.LoadSongs)?.songs?.shuffled() ?: emptyList() }
     private fun currentViewState(): ViewState = viewState.value ?: ViewState()
 
     init {
         viewState.value = ViewState()
     }
 
-    suspend fun getSongs() {
+    suspend fun getSongs(artistIds: List<String>) {
         viewState.value = currentViewState().copy(isLoadingSongs = true)
 
         try {
@@ -49,15 +49,13 @@ class SongsViewModel(
         }
     }
 
-    fun shuffleSongs() {
-        if (command.value is Command.LoadSongs) {
-            val songs = (command.value as Command.LoadSongs).songs.shuffled()
-            val group = songs.groupBy { it.artistId }
-            val songsShuffled = combine(group.values.toTypedArray())
+    fun shuffleSongs(songList: List<Song> = actualSongs) {
+        val songs = songList.shuffled()
+        val group = songs.groupBy { it.artistId }
+        val songsShuffled = combine(group.values.toTypedArray())
 
-            tryCast<List<Song>>(songsShuffled) {
-                command.postValue(Command.LoadSongs(this))
-            }
+        tryCast<List<Song>>(songsShuffled) {
+            command.postValue(Command.LoadSongs(this))
         }
     }
 
