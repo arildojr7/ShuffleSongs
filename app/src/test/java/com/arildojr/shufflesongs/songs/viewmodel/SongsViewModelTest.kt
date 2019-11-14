@@ -9,18 +9,20 @@ import com.arildojr.shufflesongs.BaseTest
 import com.arildojr.shufflesongs.core.util.CommandProvider
 import com.arildojr.shufflesongs.core.util.GenericCommand
 import com.arildojr.shufflesongs.core.util.SingleLiveEvent
-import com.nhaarman.mockitokotlin2.*
+import com.nhaarman.mockitokotlin2.firstValue
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.times
+import com.nhaarman.mockitokotlin2.verify
+import com.nhaarman.mockitokotlin2.whenever
 import kotlinx.coroutines.runBlocking
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotEquals
 import org.junit.Before
-import org.junit.Test
-import org.junit.Assert.*
 import org.junit.Rule
-import org.junit.runner.RunWith
+import org.junit.Test
 import org.mockito.ArgumentCaptor
-import org.mockito.junit.MockitoJUnitRunner
 import retrofit2.Response
 
-@RunWith(MockitoJUnitRunner::class)
 class SongsViewModelTest : BaseTest() {
 
     @JvmField
@@ -52,7 +54,7 @@ class SongsViewModelTest : BaseTest() {
     }
 
     @Test
-    fun getSongs() = runBlocking {
+    fun `Get songs, when it is requested, then LoadSongs command is triggered`() = runBlocking {
         // ARRANGE
         val expectedSongs = createTestData<List<Song>>(loadJsonFromAsset(SONGS_DATA_FILE))
         val expectedSongsCount = 5
@@ -61,7 +63,8 @@ class SongsViewModelTest : BaseTest() {
         songsViewModel.viewState.observeForever(viewStateObserver)
 
         val expectedLoadSongsCommand = SongsViewModel.Command.LoadSongs(expectedSongs)
-        val expectedSongsResponse = Response.success(ResponseWrapper(expectedSongsCount, expectedSongs))
+        val expectedSongsResponse =
+            Response.success(ResponseWrapper(expectedSongsCount, expectedSongs))
 
         whenever(
             songsRepositoryMock.getSongs(
@@ -75,7 +78,10 @@ class SongsViewModelTest : BaseTest() {
 
         // ASSERT
         verify(viewStateObserver, times(1)).onChanged(expectedViewState.copy(isLoadingSongs = true))
-        verify(viewStateObserver, times(2)).onChanged(expectedViewState.copy(isLoadingSongs = false))
+        verify(
+            viewStateObserver,
+            times(2)
+        ).onChanged(expectedViewState.copy(isLoadingSongs = false))
 
         val commandCaptor = ArgumentCaptor.forClass(SongsViewModel.Command.LoadSongs::class.java)
         verify(commandMock, times(1)).postValue(commandCaptor.capture())
@@ -83,4 +89,27 @@ class SongsViewModelTest : BaseTest() {
         val triggeredCommand = commandCaptor.firstValue
         assertEquals(expectedLoadSongsCommand.songs, triggeredCommand.songs)
     }
+
+    @Test
+    fun `Shuffle songs, when it is requested, then song list is shuffled`() = runBlocking {
+        // ARRANGE
+        val expectedSongs = createTestData<List<Song>>(loadJsonFromAsset(SONGS_DATA_FILE))
+        val expectedLoadSongsCommand = SongsViewModel.Command.LoadSongs(expectedSongs)
+
+        // ACT
+        songsViewModel.shuffleSongs(expectedSongs)
+
+        // ASSERT
+        val commandCaptor = ArgumentCaptor.forClass(SongsViewModel.Command.LoadSongs::class.java)
+        verify(commandMock, times(1)).postValue(commandCaptor.capture())
+
+        val triggeredCommand = commandCaptor.firstValue
+        assertNotEquals(expectedLoadSongsCommand.songs, triggeredCommand.songs)
+
+        // check if there are no consecutive artists
+        triggeredCommand.songs.forEachIndexed { i, song ->
+            assertNotEquals(song.artistId, triggeredCommand.songs.getOrNull(i + 1)?.artistId)
+        }
+    }
+
 }
