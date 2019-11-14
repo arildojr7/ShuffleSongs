@@ -8,6 +8,7 @@ import com.arildojr.shufflesongs.core.util.ActivityBindingProperty
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
 import kotlin.coroutines.CoroutineContext
 
 abstract class BaseActivity<T : ViewDataBinding>(
@@ -27,6 +28,10 @@ abstract class BaseActivity<T : ViewDataBinding>(
         subscribeUi()
     }
 
+    override fun onDestroy() {
+        coroutineContext.cancel()
+        super.onDestroy()
+    }
 
     /**
      * Override this method to observe livedata objects (optional)
