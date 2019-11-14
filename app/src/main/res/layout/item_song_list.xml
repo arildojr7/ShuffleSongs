@@ -42,6 +42,7 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/tvSongTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
@@ -53,6 +54,7 @@
                 tools:text="Song Title" />
 
             <TextView
+                android:id="@+id/tvArtistName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
