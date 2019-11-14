@@ -1,6 +1,5 @@
-package com.arildojr.shufflesongs
+package com.arildojr.data
 
-import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import java.io.IOException
@@ -32,11 +31,4 @@ open class BaseTest {
         }
         return jsonStr
     }
-
-    protected fun RecyclerView.update() {
-        // workaround to avoid robolectric bug
-        this.measure(0, 0)
-        this.layout(0, 0, 100, 1000)
-    }
-
 }

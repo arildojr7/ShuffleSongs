@@ -2,8 +2,8 @@ package com.arildojr.shufflesongs.songs
 
 import android.os.Build
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.arildojr.data.songs.model.Song
 import com.arildojr.shufflesongs.BaseTest
+import com.arildojr.data.songs.model.Song
 import com.arildojr.shufflesongs.songs.adapter.SongsAdapter
 import kotlinx.android.synthetic.main.item_song_list.view.*
 import org.junit.Assert.assertEquals
@@ -32,7 +32,6 @@ class SongsActivityTest : BaseTest() {
     private lateinit var activity: SongsActivity
     private lateinit var activityController: ActivityController<SongsActivity>
     private val SONGS_DATA_FILE = "songs.json"
-
 
     @Before
     fun setUp() {
@@ -63,5 +62,4 @@ class SongsActivityTest : BaseTest() {
             assertEquals("${song.artistName} (${song.primaryGenreName})", artistName)
         }
     }
-
 }
