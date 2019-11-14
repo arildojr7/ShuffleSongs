@@ -1,3 +1,12 @@
 <resources>
-    <string name="app_name">ShuffleSongs</string>
+    <string name="app_name">Shuffle Songs</string>
+
+    <string name="error_dialog_title">Ops!</string>
+    <string name="error_dialog_description">Ocorreu um erro ao carregar a playlist</string>
+    <string name="error_dialog_try_again">Tentar novamente</string>
+    <string name="error_dialog_exit">Sair</string>
+
+    <string name="title_activity_splash">SplashActivity</string>
+    <string name="shuffle">Shuffle</string>
+    <string name="artist_genre">%s (%s)</string>
 </resources>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.arildojr.shufflesongs.songs.viewmodel.SongsViewModel" />
+
+        <import type="android.view.View" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/darkGray"
+        tools:context=".songs.SongsActivity">
+
+        <LinearLayout
+            android:id="@+id/llTopHeader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/lightGray"
+                android:minHeight="?attr/actionBarSize"
+                app:titleTextColor="@android:color/white" />
+
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvSongs"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:paddingBottom="16dp"
+            tools:listitem="@layout/item_song_list"
+            tools:itemCount="5"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/llTopHeader" />
+
+        <ProgressBar
+            android:id="@+id/pbLoaderSongs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:indeterminateTint="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

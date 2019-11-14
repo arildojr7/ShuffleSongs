@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="song"
+            type="com.arildojr.data.songs.model.Song" />
+
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/darkGray"
+        android:orientation="horizontal"
+        android:paddingStart="24dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="24dp"
+        android:paddingBottom="8dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:importantForAccessibility="no"
+                android:src="@drawable/bg_rounded_stroke_gray"
+                bind:cornerSize="@{24}"
+                bind:imageUrl="@{song.artworkUrl}" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginStart="16dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvSongTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:fontFamily="@font/noto_medium"
+                android:singleLine="true"
+                android:text="@{song.trackName}"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                tools:text="Song Title" />
+
+            <TextView
+                android:id="@+id/tvArtistName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:fontFamily="@font/noto_regular"
+                android:singleLine="true"
+                android:text="@{@string/artist_genre(song.artistName, song.primaryGenreName)}"
+                android:textColor="@color/colorAccent"
+                android:textSize="14sp"
+                tools:text="Artist (Genre)" />
+
+        </LinearLayout>
+    </LinearLayout>
+</layout>
