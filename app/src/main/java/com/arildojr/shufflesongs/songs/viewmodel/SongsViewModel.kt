@@ -13,7 +13,6 @@ class SongsViewModel(
 ) : BaseViewModel() {
 
     companion object {
-        private val artistIds = listOf("909253", "1171421960", "358714030", "1419227", "264111789")
         private const val LIMIT_SONGS = 5
     }
 
@@ -25,7 +24,7 @@ class SongsViewModel(
         viewState.value = ViewState()
     }
 
-    suspend fun getSongs() {
+    suspend fun getSongs(artistIds: List<String>) {
         viewState.value = currentViewState().copy(isLoadingSongs = true)
 
         try {

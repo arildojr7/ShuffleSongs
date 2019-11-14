@@ -62,4 +62,9 @@ dependencies {
 
     /* KOIN */
     implementation "org.koin:koin-android-viewmodel:2.0.1"
+
+    /* MOCKITO */
+    testImplementation 'com.nhaarman.mockitokotlin2:mockito-kotlin:2.1.0'
+    testImplementation 'org.mockito:mockito-inline:2.21.0'
+    testImplementation 'android.arch.core:core-testing:1.1.1'
 }
