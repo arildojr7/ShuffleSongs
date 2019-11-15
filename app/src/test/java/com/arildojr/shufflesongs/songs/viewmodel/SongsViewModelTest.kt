@@ -14,6 +14,7 @@ import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.times
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
@@ -71,7 +72,7 @@ class SongsViewModelTest : BaseTest() {
                 expectedSongs.joinToString(",") { it.artistId.toString() },
                 expectedSongsCount
             )
-        ).thenReturn(expectedSongsResponse)
+        ).thenReturn(flow { emit(expectedSongsResponse) })
 
         // ACT
         songsViewModel.getSongs(expectedSongs.map { it.artistId.toString() })
