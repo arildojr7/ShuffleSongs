@@ -2,9 +2,11 @@ package com.arildojr.data.songs
 
 import com.arildojr.data.songs.model.ResponseWrapper
 import com.arildojr.data.songs.model.Song
+import kotlinx.coroutines.flow.Flow
 import retrofit2.Response
-import retrofit2.http.Query
 
 interface SongsRepository {
-    suspend fun getSongs(@Query("id") artistId: String, limit: Int): Response<ResponseWrapper<Song>>
+    suspend fun getSongs(artistId: String, limit: Int): Flow<Response<ResponseWrapper<Song>>>
+
+    suspend fun saveSongs(songs: List<Song>)
 }
