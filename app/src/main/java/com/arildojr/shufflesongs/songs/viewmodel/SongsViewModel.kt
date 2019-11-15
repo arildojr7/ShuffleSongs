@@ -3,9 +3,12 @@ package com.arildojr.shufflesongs.songs.viewmodel
 import androidx.lifecycle.MutableLiveData
 import com.arildojr.data.songs.SongsRepository
 import com.arildojr.data.songs.enum.WrapperTypeEnum
+import com.arildojr.data.songs.exception.FailureRequestException
+import com.arildojr.data.songs.exception.FailureRequestWithLocalDataException
 import com.arildojr.data.songs.model.Song
 import com.arildojr.shufflesongs.core.base.BaseViewModel
 import com.arildojr.shufflesongs.core.util.*
+import kotlinx.coroutines.flow.collect
 
 class SongsViewModel(
     private val songsRepository: SongsRepository,
@@ -29,23 +32,30 @@ class SongsViewModel(
         viewState.value = currentViewState().copy(isLoadingSongs = true)
 
         try {
-            val response = songsRepository.getSongs(artistIds.joinToString(","), LIMIT_SONGS)
+            songsRepository.getSongs(artistIds.joinToString(","), LIMIT_SONGS).collect { response ->
+                viewState.value = currentViewState().copy(isLoadingSongs = false)
 
-            viewState.value = currentViewState().copy(isLoadingSongs = false)
-
-            if (response.isSuccessful) {
-                response.body()?.results?.let { songList ->
-                    command.postValue(
-                        Command.LoadSongs(songList.filter { it.wrapperType == WrapperTypeEnum.TRACK.getValue() })
-                    )
+                if (response.isSuccessful) {
+                    response.body()?.results?.let { songList ->
+                        command.postValue(
+                            Command.LoadSongs(songList.filter { it.wrapperType == WrapperTypeEnum.TRACK.getValue() })
+                        )
+                    }
+                } else {
+                    command.postValue(Command.ErrorOnLoadSongs)
                 }
-            } else {
-                command.postValue(Command.ErrorOnLoadSongs)
             }
 
         } catch (e: Exception) {
-            viewState.value = currentViewState().copy(isLoadingSongs = false)
-            command.postValue(Command.ErrorOnLoadSongs)
+            when(e) {
+                is FailureRequestException -> {
+                    viewState.value = currentViewState().copy(isLoadingSongs = false)
+                    command.postValue(Command.ErrorOnLoadSongs)
+                }
+                is FailureRequestWithLocalDataException -> {
+                    // show a toast to notify data is only local
+                }
+            }
         }
     }
 
